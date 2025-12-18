@@ -1,25 +1,28 @@
-import {FilterType, Task} from "./App.tsx";
+import {FilterType, Task, Todolist} from "./App.tsx";
 import {Button} from "./Button.tsx";
 import {ChangeEvent, KeyboardEvent, useState} from "react";
 
 type Props = {
+    deleteTodolist: (todolistId: string) => void,
+    todolist: Todolist,
     title: string,
     tasks: Task[],
-    deleteTask: (taskId: string) => void,
-    changeFiler: (filter: FilterType) => void,
-    createTask: (title: string) => void,
-    changeStatus: (taskId: string, taskStatus: boolean) => void
+    deleteTask: (todolistId: string, taskId: string) => void,
+    changeFiler: (filter: FilterType, id: string) => void,
+    createTask: (todolistId: string, title: string) => void,
+    changeStatus: (todolistId: string, taskId: string, taskStatus: boolean) => void
     filter: FilterType,
 }
 
-export const TodolistItem = ({title, tasks, deleteTask, changeFiler, createTask, changeStatus, filter}: Props) => {
+export const TodolistItem = ({tasks, deleteTask, changeFiler, createTask, changeStatus,  todolist, deleteTodolist}: Props) => {
 
+    const {title, filter, id} = todolist
     const [inputTitle, setInputTitle] = useState('');
     const [error, setError] = useState('')
     const createTaskHandler = () => {
         const trimTitle = inputTitle.trim()
         if(trimTitle !== ''){
-            createTask(inputTitle)
+            createTask(id, inputTitle)
             setInputTitle('')
         } else{
             setError('Title is required')
@@ -34,9 +37,21 @@ export const TodolistItem = ({title, tasks, deleteTask, changeFiler, createTask,
         if (e.key === 'Enter') {createTaskHandler()}
     }
 
+    const changeFilerHandler = (filter: FilterType) => {
+        changeFiler(filter, id)
+    }
+
+    const deleteTodolistHandler = () =>{
+        deleteTodolist(id)
+    }
+
     return (
         <div>
-            <h3>{title}</h3>
+            <div className="container">
+                <h3>{title}</h3>
+                <button onClick={deleteTodolistHandler}>X</button>
+            </div>
+
             <div>
                 <input
                     className={error? 'error' : ''}
@@ -52,7 +67,7 @@ export const TodolistItem = ({title, tasks, deleteTask, changeFiler, createTask,
                 <ul>
                     {tasks.map((task) => {
                         const changeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-                            changeStatus(task.id, e.target.checked)
+                            changeStatus(id, task.id, e.target.checked)
                         }
                         return (
                             <li key={task.id}>
@@ -61,7 +76,7 @@ export const TodolistItem = ({title, tasks, deleteTask, changeFiler, createTask,
                                     type="checkbox"
                                     checked={task.isDone}/>
                                 <span className={task.isDone? '' : 'is-done'}>{task.title}</span>
-                                <Button title={'x'} onClick={() => deleteTask(task.id)}/>
+                                <Button title={'x'} onClick={() => deleteTask(id, task.id)}/>
                             </li>
                         );
                     })}
@@ -72,15 +87,15 @@ export const TodolistItem = ({title, tasks, deleteTask, changeFiler, createTask,
                 <Button
                     className={filter === 'All'? 'active-filter' : ''}
                     title={'All'}
-                    onClick={() => changeFiler('All')} />
+                    onClick={() => changeFilerHandler('All')} />
                 <Button
                     className={filter === 'Active'? 'active-filter' : ''}
                     title={'Active'}
-                    onClick={() => changeFiler('Active')}/>
+                    onClick={() => changeFilerHandler('Active')}/>
                 <Button
                     className={filter === 'Completed'? 'active-filter' : ''}
                     title={'Completed'}
-                    onClick={() => changeFiler('Completed')}/>
+                    onClick={() => changeFilerHandler('Completed')}/>
             </div>
         </div>
     );
