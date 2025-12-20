@@ -1,6 +1,8 @@
 import { FilterType, Task, Todolist } from "./App.tsx";
 import { Button } from "./Button.tsx";
-import { ChangeEvent, KeyboardEvent, useState } from "react";
+import { ChangeEvent } from "react";
+import { CreateItemForm } from "./CreateItemForm.tsx";
+import { EditableSpan } from "./EditableSpan.tsx";
 
 type Props = {
   deleteTodolist: (todolistId: string) => void;
@@ -10,12 +12,14 @@ type Props = {
   deleteTask: (todolistId: string, taskId: string) => void;
   changeFiler: (filter: FilterType, id: string) => void;
   createTask: (todolistId: string, title: string) => void;
+  changeTaskTitle: (todolistId: string, taskId: string, title: string) => void;
   changeStatus: (
     todolistId: string,
     taskId: string,
     taskStatus: boolean,
   ) => void;
   filter: FilterType;
+  changeTodolistTitle: (todolistId: string, title: string) => void;
 };
 
 export const TodolistItem = ({
@@ -26,30 +30,10 @@ export const TodolistItem = ({
   changeStatus,
   todolist,
   deleteTodolist,
+  changeTaskTitle,
+  changeTodolistTitle,
 }: Props) => {
   const { title, filter, id } = todolist;
-  const [inputTitle, setInputTitle] = useState("");
-  const [error, setError] = useState("");
-  const createTaskHandler = () => {
-    const trimTitle = inputTitle.trim();
-    if (trimTitle !== "") {
-      createTask(id, inputTitle);
-      setInputTitle("");
-    } else {
-      setError("Title is required");
-    }
-  };
-  const changeTaskTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputTitle(e.target.value);
-
-    setError("");
-  };
-
-  const createTaskOnEnterHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      createTaskHandler();
-    }
-  };
 
   const changeFilerHandler = (filter: FilterType) => {
     changeFiler(filter, id);
@@ -59,28 +43,30 @@ export const TodolistItem = ({
     deleteTodolist(id);
   };
 
+  const createTaskHandler = (title: string) => {
+    createTask(id, title);
+  };
+
+  const changeTodolistTitleHandler = (title: string) => {
+    changeTodolistTitle(id, title);
+  };
+
   return (
     <div>
-      <div className="container">
-        <h3>{title}</h3>
+      <div className={"container"}>
+        <EditableSpan title={title} onChange={changeTodolistTitleHandler} />
+        {/*<h3>{title}</h3>*/}
         <button onClick={deleteTodolistHandler}>X</button>
       </div>
-
-      <div>
-        <input
-          className={error ? "error" : ""}
-          value={inputTitle}
-          onChange={changeTaskTitleHandler}
-          onKeyUp={createTaskOnEnterHandler}
-        />
-        <button onClick={createTaskHandler}>+</button>
-        {error && <p className={"errorMessage"}>{error}</p>}
-      </div>
+      <CreateItemForm createItem={createTaskHandler} />
       {tasks.length === 0 ? (
         <p>There aren't tasks</p>
       ) : (
         <ul>
           {tasks.map((task) => {
+            const changeTaskTitleHandler = (title: string) => {
+              changeTaskTitle(id, task.id, title);
+            };
             const changeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
               changeStatus(id, task.id, e.target.checked);
             };
@@ -92,7 +78,10 @@ export const TodolistItem = ({
                   checked={task.isDone}
                 />
                 <span className={task.isDone ? "" : "is-done"}>
-                  {task.title}
+                  <EditableSpan
+                    title={task.title}
+                    onChange={changeTaskTitleHandler}
+                  />
                 </span>
                 <Button title={"x"} onClick={() => deleteTask(id, task.id)} />
               </li>
