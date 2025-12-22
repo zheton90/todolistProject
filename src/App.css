@@ -1,5 +1,5 @@
 .app {
-  padding: 30px;
+  /*padding: 30px;*/
   display: flex;
   flex-wrap: wrap;
 }
@@ -21,7 +21,7 @@
 
 .is-done {
   text-decoration: line-through;
-  opacity: 0.5;
+
 }
 
 .container {

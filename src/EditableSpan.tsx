@@ -1,4 +1,5 @@
 import { ChangeEvent, useState } from "react";
+import { TextField } from "@mui/material";
 
 type Props = {
   title: string;
@@ -26,7 +27,9 @@ export const EditableSpan = ({ title, onChange }: Props) => {
   return (
     <>
       {isEditeMode ? (
-        <input
+        <TextField
+          variant="outlined"
+          size="small"
           value={inputValue}
           onChange={changeTitle}
           autoFocus

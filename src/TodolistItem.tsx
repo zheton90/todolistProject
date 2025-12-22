@@ -1,8 +1,11 @@
 import { FilterType, Task, Todolist } from "./App.tsx";
-import { Button } from "./Button.tsx";
 import { ChangeEvent } from "react";
 import { CreateItemForm } from "./CreateItemForm.tsx";
 import { EditableSpan } from "./EditableSpan.tsx";
+import { Button, Checkbox, IconButton, ListItem, List } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Box from "@mui/material/Box";
+import { conteinerSx, getListItemsSx } from "./TodolistItem.styles.ts";
 
 type Props = {
   deleteTodolist: (todolistId: string) => void;
@@ -55,57 +58,74 @@ export const TodolistItem = ({
     <div>
       <div className={"container"}>
         <EditableSpan title={title} onChange={changeTodolistTitleHandler} />
-        {/*<h3>{title}</h3>*/}
-        <button onClick={deleteTodolistHandler}>X</button>
+        <IconButton onClick={deleteTodolistHandler}>
+          <DeleteIcon />
+        </IconButton>
       </div>
       <CreateItemForm createItem={createTaskHandler} />
       {tasks.length === 0 ? (
         <p>There aren't tasks</p>
       ) : (
-        <ul>
+        <List>
           {tasks.map((task) => {
             const changeTaskTitleHandler = (title: string) => {
               changeTaskTitle(id, task.id, title);
+              console.log(id, task.id);
             };
             const changeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
+              console.log(id, task.id, e.target.checked);
+
               changeStatus(id, task.id, e.target.checked);
             };
             return (
-              <li key={task.id}>
-                <input
-                  onChange={changeStatusHandler}
-                  type="checkbox"
-                  checked={task.isDone}
-                />
-                <span className={task.isDone ? "" : "is-done"}>
-                  <EditableSpan
-                    title={task.title}
-                    onChange={changeTaskTitleHandler}
+              <ListItem key={task.id} sx={getListItemsSx(task.isDone)}>
+                <div>
+                  <Checkbox
+                    onChange={changeStatusHandler}
+                    checked={task.isDone}
                   />
-                </span>
-                <Button title={"x"} onClick={() => deleteTask(id, task.id)} />
-              </li>
+                  <span className={task.isDone ? "is-done" : ""}>
+                    <EditableSpan
+                      title={task.title}
+                      onChange={changeTaskTitleHandler}
+                    />
+                  </span>
+                </div>
+
+                <IconButton onClick={() => deleteTask(id, task.id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </ListItem>
             );
           })}
-        </ul>
+        </List>
       )}
-      <div>
+      <Box sx={conteinerSx}>
         <Button
-          className={filter === "All" ? "active-filter" : ""}
-          title={"All"}
+          size="small"
+          variant={filter === "All" ? "contained" : "outlined"}
+          color="primary"
           onClick={() => changeFilerHandler("All")}
-        />
+        >
+          All
+        </Button>
         <Button
-          className={filter === "Active" ? "active-filter" : ""}
-          title={"Active"}
+          size="small"
+          variant={filter === "Active" ? "contained" : "outlined"}
+          color="primary"
           onClick={() => changeFilerHandler("Active")}
-        />
+        >
+          Active
+        </Button>
         <Button
-          className={filter === "Completed" ? "active-filter" : ""}
-          title={"Completed"}
+          size="small"
+          variant={filter === "Completed" ? "contained" : "outlined"}
+          color="primary"
           onClick={() => changeFilerHandler("Completed")}
-        />
-      </div>
+        >
+          Completed
+        </Button>
+      </Box>
     </div>
   );
 };

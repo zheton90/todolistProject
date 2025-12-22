@@ -1,4 +1,6 @@
 import { ChangeEvent, KeyboardEvent, useState } from "react";
+import { IconButton, TextField } from "@mui/material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 type Props = {
   createItem: (title: string) => void;
@@ -31,14 +33,21 @@ export const CreateItemForm = ({ createItem }: Props) => {
 
   return (
     <div className="container">
-      <input
-        className={error ? "error" : ""}
+      <TextField
+        label={"Enter a title"}
+        size="small"
+        variant="outlined"
+        color="primary"
         value={inputTitle}
+        error={!!error}
+        helperText={error}
         onChange={changeTaskTitleHandler}
         onKeyUp={createTaskOnEnterHandler}
       />
-      <button onClick={createTaskHandler}>+</button>
-      {error && <p className={"errorMessage"}>{error}</p>}
+
+      <IconButton onClick={createTaskHandler} color="primary">
+        <AddCircleIcon />
+      </IconButton>
     </div>
   );
 };
