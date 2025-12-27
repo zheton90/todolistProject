@@ -10,7 +10,7 @@ import { conteinerSx, getListItemsSx } from "./TodolistItem.styles.ts";
 type Props = {
   deleteTodolist: (todolistId: string) => void;
   todolist: Todolist;
-  title: string;
+  // title: string;
   tasks: Task[];
   deleteTask: (todolistId: string, taskId: string) => void;
   changeFiler: (filter: FilterType, id: string) => void;
@@ -63,11 +63,11 @@ export const TodolistItem = ({
         </IconButton>
       </div>
       <CreateItemForm createItem={createTaskHandler} />
-      {tasks.length === 0 ? (
+      {tasks?.length === 0 ? (
         <p>There aren't tasks</p>
       ) : (
         <List>
-          {tasks.map((task) => {
+          {tasks?.map((task) => {
             const changeTaskTitleHandler = (title: string) => {
               changeTaskTitle(id, task.id, title);
               console.log(id, task.id);
