@@ -1,5 +1,5 @@
 import { beforeEach, expect, test } from "vitest";
-import type { TaskState } from "../App";
+import type { TaskState } from "../app/App.tsx";
 import {
   changeTaskStatusAC,
   changeTaskTitleAC,

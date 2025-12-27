@@ -1,4 +1,4 @@
-import { TaskState } from "../App";
+import { TaskState } from "../app/App.tsx";
 import { CreateTodolistAT, DeleteTodolistAT } from "./todolists-reducer.ts";
 import { v1 } from "uuid";
 
