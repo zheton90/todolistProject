@@ -1,8 +1,7 @@
 import { List } from "@mui/material";
-import { Task } from "@/features/todolists/model/tasks-reducer.ts";
+import { selectTasks, Task } from "@/features/todolists/model/tasks-slice.ts";
 import { useAppSelector } from "@/common/hooks/useAppSelector.ts";
-import { selectTask } from "@/features/todolists/model/tasks-selectors.ts";
-import { Todolist } from "@/features/todolists/model/todolists-reducer.ts";
+import { Todolist } from "@/features/todolists/model/todolists-slice.ts";
 import { TaskItem } from "@/features/todolists/ui/TodolistItem/TodolistItem/Tasks/TodolistItem/TaskItem.tsx";
 
 type Props = {
@@ -12,7 +11,7 @@ type Props = {
 export const Tasks = ({ todolist }: Props) => {
   const { filter, id: todolistId } = todolist;
 
-  const tasks = useAppSelector(selectTask);
+  const tasks = useAppSelector(selectTasks.selectTasks);
 
   let filteredTask = tasks[todolistId];
   if (filter === "Active")

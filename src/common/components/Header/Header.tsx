@@ -1,15 +1,14 @@
 import { AppBar, Container, IconButton, Switch, Toolbar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { NavButton } from "@/common/components/NavButton/NavButton.ts";
-import { changeThemeModeAC } from "@/app/app-reducer.ts";
+import { changeThemeModeAC, selectThemeMode } from "@/app/app-slice.ts";
 import { useAppDispatch } from "@/common/hooks/useAppDispatch.ts";
 import { getTheme } from "@/common/theme.ts";
 import { useAppSelector } from "@/common/hooks/useAppSelector.ts";
-import { selectTemeMode } from "@/app/app-selectors.ts";
 import { conteinerSx } from "@/common/styles/container.styles.ts";
 
 export const Header = () => {
-  const themeMode = useAppSelector(selectTemeMode);
+  const themeMode = useAppSelector(selectThemeMode);
 
   const dispatch = useAppDispatch();
   const theme = getTheme(themeMode);
