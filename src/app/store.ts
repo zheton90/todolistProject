@@ -8,6 +8,7 @@ import {
   todolistsSlice,
 } from "@/features/todolists/model/todolists-slice.ts";
 import { appReducer, appSlice } from "@/app/app-slice.ts";
+import { authReducer, authSlice } from "@/features/auth/model/auth-slice.ts";
 
 // объединение reducer'ов с помощью combineReducers
 // const rootReducer = combineReducers({
@@ -19,6 +20,7 @@ import { appReducer, appSlice } from "@/app/app-slice.ts";
 // создание store
 export const store = configureStore({
   reducer: {
+    [authSlice.name]: authReducer,
     [tasksSlice.name]: tasksReducer,
     [todolistsSlice.name]: todolistsReducer,
     [appSlice.name]: appReducer,

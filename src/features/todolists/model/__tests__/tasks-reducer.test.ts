@@ -1,7 +1,5 @@
 import { beforeEach, expect, test } from "vitest";
 import {
-  changeTaskStatusAC,
-  changeTaskTitleAC,
   createTaskAC,
   deleteTaskAC,
   tasksReducer,

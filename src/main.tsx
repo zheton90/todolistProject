@@ -3,9 +3,12 @@ import "./index.css";
 import { App } from "./app/App.tsx";
 import { store } from "./app/store.ts";
 import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router";
 
 createRoot(document.getElementById("root")!).render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <BrowserRouter>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </BrowserRouter>,
 );

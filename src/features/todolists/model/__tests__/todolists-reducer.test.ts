@@ -1,33 +1,48 @@
 import { beforeEach, expect, test } from "vitest";
 import {
   changeTodolistFilterAC,
-  changeTodolistTitleAC,
-  createTodolistAC,
-  deleteTodolistAC,
-  Todolist,
+  deleteTodolistTC,
+  DomainTodolist,
   todolistsReducer,
+  todolistsSlice,
 } from "../todolists-slice.ts";
 import { nanoid } from "@reduxjs/toolkit";
 
 let todolistId1: string;
 let todolistId2: string;
-let startState: Todolist[] = [];
+let startState: DomainTodolist[] = [];
 
 beforeEach(() => {
   todolistId1 = nanoid();
   todolistId2 = nanoid();
 
   startState = [
-    { id: todolistId1, title: "What to learn", filter: "All" },
-    { id: todolistId2, title: "What to buy", filter: "All" },
+    {
+      id: todolistId1,
+      title: "What to learn",
+      filter: "All",
+      entityStatus: "idle",
+      order: 0,
+      addedDate: "",
+    },
+    {
+      id: todolistId2,
+      title: "What to buy",
+      filter: "All",
+      entityStatus: "idle",
+      order: 0,
+      addedDate: "",
+    },
   ];
 });
 
 test("correct todolist should be deleted", () => {
-  const endState = todolistsReducer(
+  const endState = todolistsSlice.reducer(
     startState,
-    deleteTodolistAC({ id: todolistId1 }),
+    deleteTodolistTC.fulfilled({ id: todolistId1 }),
   );
+
+  // dispatch(deleteTodolistTC({ id: todolistId1 }));
 
   expect(endState.length).toBe(1);
   expect(endState[0].id).toBe(todolistId2);

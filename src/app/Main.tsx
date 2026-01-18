@@ -3,13 +3,21 @@ import { CreateItemForm } from "@/common/components/CreateItemForm/CreateItemFor
 import { createTodolistTC } from "@/features/todolists/model/todolists-slice.ts";
 import { useAppDispatch } from "@/common/hooks/useAppDispatch.ts";
 import { Todolists } from "@/features/todolists/ui/TodolistItem/Todolists.tsx";
+import { useAppSelector } from "@/common/hooks/useAppSelector.ts";
+import { selectIsLoggedIn } from "@/features/auth/model/auth-slice.ts";
+import { Navigate } from "react-router";
 
 export const Main = () => {
   const dispatch = useAppDispatch();
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   const createTodolistHandler = (title: string) => {
     dispatch(createTodolistTC({ title }));
   };
+
+  if (!isLoggedIn) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <Container maxWidth="lg">
