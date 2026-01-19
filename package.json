@@ -1,13 +1,16 @@
 {
   "name": "todolist-01",
   "private": true,
+  "homepage": "https://zheton90.github.io/todolistProject",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000",
     "build": "tsc -b && vite build",
     "test": "vitest",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -17,6 +20,7 @@
     "@mui/material": "^7.3.6",
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.2",
+    "gh-pages": "^6.3.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-hook-form": "^7.71.1",

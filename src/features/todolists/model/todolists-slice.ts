@@ -1,7 +1,4 @@
-import {
-  Todolist,
-  todolistSchema,
-} from "@/features/todolists/api/todolistsApi.types.ts";
+import { todolistSchema } from "@/features/todolists/api/todolistsApi.types.ts";
 import { todolistsApi } from "@/features/todolists/api/todolistsApi.ts";
 import {
   createAppSlice,
@@ -26,10 +23,10 @@ export const domainTodolistSchema = todolistSchema.extend({
 
 export type DomainTodolist = z.infer<typeof domainTodolistSchema>;
 
-export type _DomainTodolist = Todolist & {
-  filter: FilterType;
-  entityStatus: RequestStatus;
-};
+// export type _DomainTodolist = Todolist & {
+//   filter: FilterType;
+//   entityStatus: RequestStatus;
+// };
 
 export const todolistsSlice = createAppSlice({
   name: "todolists",
