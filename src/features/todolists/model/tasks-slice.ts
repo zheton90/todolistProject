@@ -1,4 +1,4 @@
-import { tasksApi } from "@/features/todolists/api/tasksApi.ts";
+import { _tasksApi } from "@/features/todolists/api/tasksApi.ts";
 import {
   DomainTask,
   domainTaskSchema,
@@ -201,4 +201,4 @@ export const tasksSlice = createAppSlice({
 export const { fetchTasksTC, createTaskTC, updateTaskTC, deleteTaskTC } =
   tasksSlice.actions;
 export const tasksReducer = tasksSlice.reducer;
-export const selectTasks = tasksSlice.selectors;
+export const { selectTasks } = tasksSlice.selectors;

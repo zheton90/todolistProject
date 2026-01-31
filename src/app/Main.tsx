@@ -1,18 +1,19 @@
 import { Container, Grid } from "@mui/material";
 import { CreateItemForm } from "@/common/components/CreateItemForm/CreateItemForm.tsx";
-import { createTodolistTC } from "@/features/todolists/model/todolists-slice.ts";
-import { useAppDispatch } from "@/common/hooks/useAppDispatch.ts";
 import { Todolists } from "@/features/todolists/ui/TodolistItem/Todolists.tsx";
 import { useAppSelector } from "@/common/hooks/useAppSelector.ts";
-import { selectIsLoggedIn } from "@/features/auth/model/auth-slice.ts";
+// import { selectIsLoggedIn } from "@/features/auth/model/auth-slice.ts";
 import { Navigate } from "react-router";
+import { useCreateTodolistMutation } from "@/features/todolists/api/todolistsApi.ts";
+import { selectIsLoggedIn } from "@/app/app-slice.ts";
 
 export const Main = () => {
-  const dispatch = useAppDispatch();
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
+  const [addTodolist] = useCreateTodolistMutation();
+
   const createTodolistHandler = (title: string) => {
-    dispatch(createTodolistTC({ title }));
+    addTodolist(title);
   };
 
   if (!isLoggedIn) {

@@ -10,18 +10,20 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { NavButton } from "@/common/components/NavButton/NavButton.ts";
 import {
   changeThemeModeAC,
+  selectIsLoggedIn,
+  selectNikeName,
   selectRequestStatus,
   selectThemeMode,
+  setIsLoggedInAC,
 } from "@/app/app-slice.ts";
 import { useAppDispatch } from "@/common/hooks/useAppDispatch.ts";
 import { getTheme } from "@/common/theme.ts";
 import { useAppSelector } from "@/common/hooks/useAppSelector.ts";
 import { conteinerSx } from "@/common/styles/container.styles.ts";
-import {
-  logoutTC,
-  selectIsLoggedIn,
-  selectNikeName,
-} from "@/features/auth/model/auth-slice.ts";
+import { useLogoutMutation } from "@/features/auth/api/authApi.ts";
+import { AUTH_TOKEN } from "@/common/constants";
+import { clearDataAC } from "@/common/actions";
+// import {useMeQuery} from "@/features/auth/api/authApi.ts";
 
 export const Header = () => {
   const themeMode = useAppSelector(selectThemeMode);
@@ -30,6 +32,7 @@ export const Header = () => {
   const dispatch = useAppDispatch();
   const theme = getTheme(themeMode);
   const requestStatus = useAppSelector(selectRequestStatus);
+  const [logout] = useLogoutMutation();
   const nikeName = useAppSelector(selectNikeName);
 
   const changeMode = () => {
@@ -38,8 +41,16 @@ export const Header = () => {
     );
   };
 
-  const handleLogout = () => {
-    dispatch(logoutTC());
+  const handleLogout = async () => {
+    try {
+      await logout();
+      dispatch(setIsLoggedInAC({ isLoggedIn: false }));
+      localStorage.removeItem(AUTH_TOKEN);
+      dispatch(clearDataAC());
+    } catch (e) {
+      console.log(e);
+    }
+    // dispatch(logoutTC());
   };
 
   return (

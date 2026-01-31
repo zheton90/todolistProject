@@ -3,12 +3,14 @@ import {
   tasksReducer,
   tasksSlice,
 } from "@/features/todolists/model/tasks-slice.ts";
+
+import { appReducer, appSlice } from "@/app/app-slice.ts";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { baseApi } from "@/app/baseApi.ts";
 import {
   todolistsReducer,
   todolistsSlice,
 } from "@/features/todolists/model/todolists-slice.ts";
-import { appReducer, appSlice } from "@/app/app-slice.ts";
-import { authReducer, authSlice } from "@/features/auth/model/auth-slice.ts";
 
 // объединение reducer'ов с помощью combineReducers
 // const rootReducer = combineReducers({
@@ -20,12 +22,17 @@ import { authReducer, authSlice } from "@/features/auth/model/auth-slice.ts";
 // создание store
 export const store = configureStore({
   reducer: {
-    [authSlice.name]: authReducer,
+    // [authSlice.name]: authReducer,
     [tasksSlice.name]: tasksReducer,
     [todolistsSlice.name]: todolistsReducer,
     [appSlice.name]: appReducer,
+    [baseApi.reducerPath]: baseApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(baseApi.middleware),
 });
+
+setupListeners(store.dispatch);
 
 // автоматическое определение типа всего объекта состояния
 export type RootState = ReturnType<typeof store.getState>;

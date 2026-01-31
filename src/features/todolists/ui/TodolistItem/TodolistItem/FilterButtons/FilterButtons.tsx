@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import {
   changeTodolistFilterAC,
   DomainTodolist,
-  FilterType,
+  FilterValues,
 } from "@/features/todolists/model/todolists-slice.ts";
 import { useAppDispatch } from "@/common/hooks/useAppDispatch.ts";
 import { conteinerSx } from "@/common/styles/container.styles.ts";
@@ -16,7 +16,7 @@ export const FilterButtons = ({ todolist }: Props) => {
   const { filter, id: todolistId } = todolist;
   const dispatch = useAppDispatch();
 
-  const changeFiler = (filter: FilterType) => {
+  const changeFiler = (filter: FilterValues) => {
     dispatch(changeTodolistFilterAC({ id: todolistId, filter }));
   };
 
@@ -24,25 +24,25 @@ export const FilterButtons = ({ todolist }: Props) => {
     <Box sx={conteinerSx}>
       <Button
         size="small"
-        variant={filter === "All" ? "contained" : "outlined"}
+        variant={filter === "all" ? "contained" : "outlined"}
         color="primary"
-        onClick={() => changeFiler("All")}
+        onClick={() => changeFiler("all")}
       >
         All
       </Button>
       <Button
         size="small"
-        variant={filter === "Active" ? "contained" : "outlined"}
+        variant={filter === "active" ? "contained" : "outlined"}
         color="primary"
-        onClick={() => changeFiler("Active")}
+        onClick={() => changeFiler("active")}
       >
         Active
       </Button>
       <Button
         size="small"
-        variant={filter === "Completed" ? "contained" : "outlined"}
+        variant={filter === "completed" ? "contained" : "outlined"}
         color="primary"
-        onClick={() => changeFiler("Completed")}
+        onClick={() => changeFiler("completed")}
       >
         Completed
       </Button>

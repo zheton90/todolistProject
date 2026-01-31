@@ -1,22 +1,22 @@
 import { Checkbox, IconButton, ListItem } from "@mui/material";
 import { EditableSpan } from "@/common/components/EditableSpan/EditableSpan.tsx";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  deleteTaskTC,
-  updateTaskTC,
-} from "@/features/todolists/model/tasks-slice.ts";
 import { ChangeEvent } from "react";
-import { useAppDispatch } from "@/common/hooks/useAppDispatch.ts";
 import { getListItemsSx } from "@/features/todolists/ui/TodolistItem/TodolistItem/Tasks/TodolistItem/TaskItem.styles.ts";
 import { DomainTask } from "@/features/todolists/api/tasksApi.types.ts";
 import { TaskStatus } from "@/common/enums/enums.ts";
+import {
+  useDeleteTaskMutation,
+  useUpdateTaskMutation,
+} from "@/features/todolists/api/tasksApi.ts";
 
 type Props = {
   task: DomainTask;
   todolistId: string;
 };
 export const TaskItem = ({ task, todolistId }: Props) => {
-  const dispatch = useAppDispatch();
+  const [updateTask] = useUpdateTaskMutation();
+  const [deeteTask] = useDeleteTaskMutation();
 
   const changeTaskTitleHandler = (title: string) => {
     const model = {
@@ -27,15 +27,10 @@ export const TaskItem = ({ task, todolistId }: Props) => {
       deadline: task.deadline,
       status: task.status,
     };
-    dispatch(
-      updateTaskTC({
-        todolistId,
-        taskId: task.id,
-        model,
-      }),
-    );
-    // dispatch(changeTaskTitleAC({ todolistId, taskId: task.id, title }));
+
+    updateTask({ todolistId, taskId: task.id, model });
   };
+
   const changeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const newStatusValue = e.currentTarget.checked;
     const model = {
@@ -46,17 +41,11 @@ export const TaskItem = ({ task, todolistId }: Props) => {
       deadline: task.deadline,
       status: newStatusValue ? TaskStatus.Completed : TaskStatus.New,
     };
-    dispatch(
-      updateTaskTC({
-        todolistId,
-        taskId: task.id,
-        model,
-      }),
-    );
+    updateTask({ todolistId, taskId: task.id, model });
   };
 
   const deleteTaskHandler = () => {
-    dispatch(deleteTaskTC({ todolistId, taskId: task.id }));
+    deeteTask({ todolistId, taskId: task.id });
   };
   return (
     <ListItem
