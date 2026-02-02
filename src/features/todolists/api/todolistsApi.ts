@@ -5,21 +5,6 @@ import { DomainTodolist } from "@/features/todolists/model/todolists-slice.ts";
 import { baseApi } from "@/app/baseApi.ts";
 
 export const todolistsApi = baseApi.injectEndpoints({
-  // reducerPath: "todolistsApi",
-  // baseQuery: fetchBaseQuery({
-  //   baseUrl: import.meta.env.VITE_BASE_URL,
-  //   headers: {
-  //     "API-KEY": import.meta.env.VITE_API_KEY,
-  //   },
-  //   prepareHeaders: (headers) => {
-  //     headers.set(
-  //       "Authorization",
-  //       `Bearer ${localStorage.getItem(AUTH_TOKEN)}`,
-  //     );
-  //   },
-
-  // }),
-  // tagTypes: ["Todolists"],
   endpoints: (builder) => ({
     getTodolists: builder.query<DomainTodolist[], void>({
       query: () => "todo-lists",

@@ -22,8 +22,8 @@ import { useAppSelector } from "@/common/hooks/useAppSelector.ts";
 import { conteinerSx } from "@/common/styles/container.styles.ts";
 import { useLogoutMutation } from "@/features/auth/api/authApi.ts";
 import { AUTH_TOKEN } from "@/common/constants";
-import { clearDataAC } from "@/common/actions";
-// import {useMeQuery} from "@/features/auth/api/authApi.ts";
+import { baseApi } from "@/app/baseApi.ts";
+import { ResultCode } from "@/common/enums/enums.ts";
 
 export const Header = () => {
   const themeMode = useAppSelector(selectThemeMode);
@@ -41,16 +41,20 @@ export const Header = () => {
     );
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      dispatch(setIsLoggedInAC({ isLoggedIn: false }));
-      localStorage.removeItem(AUTH_TOKEN);
-      dispatch(clearDataAC());
-    } catch (e) {
-      console.log(e);
-    }
-    // dispatch(logoutTC());
+  const handleLogout = () => {
+    logout()
+      .then((res) => {
+        if (res.data?.resultCode === ResultCode.Success) {
+          dispatch(setIsLoggedInAC({ isLoggedIn: false }));
+          localStorage.removeItem(AUTH_TOKEN);
+        }
+      })
+      .then(() => {
+        dispatch(
+          baseApi.util.invalidateTags(["Todolist", "Task"]),
+          // clearDataAC()
+        );
+      });
   };
 
   return (

@@ -9,16 +9,15 @@ import {
 } from "@/app/app-slice.ts";
 import { ErrorSnackbar } from "@/common/components";
 import { Routing } from "@/common/common/routing";
-// import { useAppDispatch } from "@/common/hooks/useAppDispatch.ts";
 import { useEffect, useState } from "react";
-// import { initializeAppTC } from "@/features/auth/model/auth-slice.ts";
 import styles from "./App.module.css";
 import { useMeQuery } from "@/features/auth/api/authApi.ts";
 import { ResultCode } from "@/common/enums/enums.ts";
+import { useAppDispatch } from "@/common/hooks/useAppDispatch.ts";
 
 export const App = () => {
   const themeMode = useAppSelector(selectThemeMode);
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [isInitialized, setIsInitialized] = useState(false);
   const { data, isLoading } = useMeQuery();
 
@@ -27,12 +26,13 @@ export const App = () => {
   useEffect(() => {
     if (isLoading) return;
     if (data?.resultCode === ResultCode.Success) {
-      setIsLoggedInAC({ isLoggedIn: true });
-      setNikeNameAC({ name: data.data.login });
+      dispatch(setIsLoggedInAC({ isLoggedIn: true }));
+      dispatch(setNikeNameAC({ name: data.data.login }));
     }
     setIsInitialized(true);
   }, [isLoading]);
 
+  // завязаться на iaLoading
   if (!isInitialized) {
     return (
       <div className={styles.circularProgressContainer}>
