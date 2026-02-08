@@ -1,7 +1,6 @@
 import { EditableSpan } from "@/common/components/EditableSpan/EditableSpan.tsx";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { DomainTodolist } from "@/features/todolists/model/todolists-slice.ts";
 import s from "./TodolistTitle.module.css";
 import {
   todolistsApi,
@@ -9,7 +8,8 @@ import {
   useUpdateTodolistTitleMutation,
 } from "@/features/todolists/api/todolistsApi.ts";
 import { useAppDispatch } from "@/common/hooks/useAppDispatch.ts";
-import { RequestStatus } from "@/common/types";
+// import { RequestStatus } from "@/common/types";
+import { DomainTodolist } from "@/features/todolists/lib";
 
 type Props = {
   todolist: DomainTodolist;
@@ -21,28 +21,56 @@ export const TodolistTitle = ({ todolist }: Props) => {
   const [updateTodolistTitle] = useUpdateTodolistTitleMutation();
   const dispatch = useAppDispatch();
 
-  const changeTodolistsStatus = (entityStatus: RequestStatus) => {
-    dispatch(
+  // const changeTodolistsStatus = (entityStatus: RequestStatus) => {
+  //   dispatch(
+  //     todolistsApi.util.updateQueryData("getTodolists", undefined, (state) => {
+  //       const todolist = state.find(
+  //         (todolist: DomainTodolist) => todolist.id === todolistId,
+  //       );
+  //       if (todolist) {
+  //         todolist.entityStatus = entityStatus;
+  //       }
+  //     }),
+  //   );
+  // };
+
+  const deleteTodolistHandler = async () => {
+    // const putchResult = dispatch(
+    //   todolistsApi.util.updateQueryData("getTodolists", undefined, (state) => {
+    //     const index = state.findIndex((todo) => todo.id === todolistId);
+    //     if (index !== -1) state.splice(index, 1);
+    //   }),
+    // );
+    //
+    // try {
+    //   await removeTodolist(todolistId).unwrap();
+    // } catch {
+    //   putchResult.undo();
+    // }
+
+    removeTodolist(todolistId);
+
+    // changeTodolistsStatus("loading");
+    // removeTodolist(todolistId)
+    //   .unwrap()
+    //   .catch(() => {
+    //     changeTodolistsStatus("idle");
+    //   });
+  };
+
+  const changeTodolistTitleHandler = async (title: string) => {
+    const putchResult = dispatch(
       todolistsApi.util.updateQueryData("getTodolists", undefined, (state) => {
-        const todolist = state.find((todolist) => todolist.id === todolistId);
-        if (todolist) {
-          todolist.entityStatus = entityStatus;
-        }
+        const index = state.findIndex((todo) => todo.id === todolistId);
+        if (index !== -1) state[index].title = title;
       }),
     );
-  };
 
-  const deleteTodolistHandler = () => {
-    changeTodolistsStatus("loading");
-    removeTodolist(todolistId)
-      .unwrap()
-      .catch(() => {
-        changeTodolistsStatus("idle");
-      });
-  };
-
-  const changeTodolistTitleHandler = (title: string) => {
-    updateTodolistTitle({ id: todolistId, title });
+    try {
+      await updateTodolistTitle({ id: todolistId, title }).unwrap();
+    } catch {
+      putchResult.undo();
+    }
   };
 
   return (

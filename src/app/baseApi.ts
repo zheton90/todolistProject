@@ -6,7 +6,7 @@ export const baseApi = createApi({
   reducerPath: "todolistsApi",
   tagTypes: ["Todolist", "Task"],
   baseQuery: async (args, api, extraOptios) => {
-    await new Promise((res) => setTimeout(res, 1500));
+    await new Promise((res) => setTimeout(res, 500));
     const result = await fetchBaseQuery({
       baseUrl: import.meta.env.VITE_BASE_URL,
       headers: {

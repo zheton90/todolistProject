@@ -6,14 +6,21 @@ import {
 } from "@/features/todolists/api/tasksApi.types.ts";
 import { BaseResponse } from "@/common/types";
 import { baseApi } from "@/app/baseApi.ts";
+import { PAGE_SIZE } from "@/common/constants";
 
 export const taskApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getTasks: builder.query<GetTasksResponse, string>({
-      query: (todolistId) => ({
+    getTasks: builder.query<
+      GetTasksResponse,
+      { todolistId: string; params: { page: number } }
+    >({
+      query: ({ todolistId, params }) => ({
         url: `/todo-lists/${todolistId}/tasks`,
+        params: { ...params, count: PAGE_SIZE },
       }),
-      providesTags: ["Task"],
+      providesTags: (_res, _err, { todolistId }) => [
+        { type: "Task", id: todolistId },
+      ],
     }),
     updateTask: builder.mutation<
       BaseResponse,
@@ -24,7 +31,60 @@ export const taskApi = baseApi.injectEndpoints({
         method: "PUT",
         body: model,
       }),
-      invalidatesTags: ["Task"],
+      onQueryStarted: async (
+        { todolistId, taskId, model },
+        { dispatch, queryFulfilled, getState },
+      ) => {
+        const args = taskApi.util.selectCachedArgsForQuery(
+          getState(),
+          "getTasks",
+        );
+        // debugger;
+        const putchResults: any[] = [];
+
+        args.forEach((arg) => {
+          putchResults.push(
+            dispatch(
+              taskApi.util.updateQueryData(
+                "getTasks",
+                { todolistId, params: { page: arg.params.page } },
+                (res) => {
+                  const index = res.items.findIndex(
+                    (task) => task.id === taskId,
+                  );
+                  if (index !== -1) {
+                    res.items[index] = { ...res.items[index], ...model };
+                  }
+                  // debugger;
+                },
+              ),
+            ),
+          );
+        });
+        // const putchResult = dispatch(
+        //   taskApi.util.updateQueryData(
+        //     "getTasks",
+        //     { todolistId, params: { page: 1 } },
+        //     (res) => {
+        //       const index = res.items.findIndex((task) => task.id === taskId);
+        //       if (index !== -1) {
+        //         res.items[index] = { ...res.items[index], ...model };
+        //       }
+        //       // debugger;
+        //     },
+        //   ),
+        // );
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          putchResults.forEach((putchResult) => {
+            putchResult.undo();
+          });
+        }
+      },
+      invalidatesTags: (_result, _error, arg) => [
+        { type: "Task", id: arg.todolistId },
+      ],
     }),
     deleteTask: builder.mutation<
       BaseResponse,
@@ -34,7 +94,9 @@ export const taskApi = baseApi.injectEndpoints({
         url: `/todo-lists/${todolistId}/tasks/${taskId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Task"],
+      invalidatesTags: (_result, _error, arg) => [
+        { type: "Task", id: arg.todolistId },
+      ],
     }),
     createTask: builder.mutation<
       BaseResponse,
@@ -45,7 +107,9 @@ export const taskApi = baseApi.injectEndpoints({
         method: "POST",
         body: { title },
       }),
-      invalidatesTags: ["Task"],
+      invalidatesTags: (_result, _error, arg) => [
+        { type: "Task", id: arg.todolistId },
+      ],
     }),
   }),
 });

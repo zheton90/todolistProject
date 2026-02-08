@@ -1,30 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import {
-  tasksReducer,
-  tasksSlice,
-} from "@/features/todolists/model/tasks-slice.ts";
 
 import { appReducer, appSlice } from "@/app/app-slice.ts";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { baseApi } from "@/app/baseApi.ts";
-import {
-  todolistsReducer,
-  todolistsSlice,
-} from "@/features/todolists/model/todolists-slice.ts";
-
-// объединение reducer'ов с помощью combineReducers
-// const rootReducer = combineReducers({
-//   tasks: tasksReducer,
-//   todolists: todolistsReducer,
-//   app: appReducer,
-// });
 
 // создание store
 export const store = configureStore({
   reducer: {
-    // [authSlice.name]: authReducer,
-    [tasksSlice.name]: tasksReducer,
-    [todolistsSlice.name]: todolistsReducer,
     [appSlice.name]: appReducer,
     [baseApi.reducerPath]: baseApi.reducer,
   },

@@ -1,10 +1,12 @@
 import { List } from "@mui/material";
-import { DomainTodolist } from "@/features/todolists/model/todolists-slice.ts";
 import { TaskItem } from "@/features/todolists/ui/TodolistItem/TodolistItem/Tasks/TodolistItem/TaskItem.tsx";
 import { DomainTask } from "@/features/todolists/api/tasksApi.types.ts";
 import { TaskStatus } from "@/common/enums/enums.ts";
 import { useGetTasksQuery } from "@/features/todolists/api/tasksApi.ts";
 import { TasksSkeleton } from "@/features/todolists/ui/TodolistItem/TodolistItem/Tasks/TasksSkeleton/TasksSkeleton.tsx";
+import { DomainTodolist } from "@/features/todolists/lib";
+import { TasksPagination } from "@/features/todolists/ui/TodolistItem/TodolistItem/Tasks/TasksPagination/TasksPagination.tsx";
+import { useState } from "react";
 
 type Props = {
   todolist: DomainTodolist;
@@ -12,8 +14,15 @@ type Props = {
 
 export const Tasks = ({ todolist }: Props) => {
   const { filter, id: todolistId } = todolist;
+  const [page, setPage] = useState(1);
 
-  const { data, isLoading } = useGetTasksQuery(todolistId);
+  const { data, isLoading } = useGetTasksQuery(
+    {
+      todolistId,
+      params: { page },
+    },
+    { refetchOnFocus: true },
+  );
 
   let filteredTask = data?.items;
   if (filter === "active")
@@ -32,10 +41,17 @@ export const Tasks = ({ todolist }: Props) => {
   return filteredTask?.length === 0 ? (
     <p>There aren't tasks</p>
   ) : (
-    <List>
-      {filteredTask?.map((task: DomainTask) => {
-        return <TaskItem key={task.id} task={task} todolistId={todolistId} />;
-      })}
-    </List>
+    <>
+      <List>
+        {filteredTask?.map((task: DomainTask) => {
+          return <TaskItem key={task.id} task={task} todolistId={todolistId} />;
+        })}
+      </List>
+      <TasksPagination
+        totalCount={data?.totalCount || 0}
+        page={page}
+        setPage={setPage}
+      />
+    </>
   );
 };

@@ -1,8 +1,8 @@
 import { instance } from "@/common/instance/instance.ts";
 import { Todolist } from "@/features/todolists/api/todolistsApi.types.ts";
 import { BaseResponse } from "@/common/types";
-import { DomainTodolist } from "@/features/todolists/model/todolists-slice.ts";
 import { baseApi } from "@/app/baseApi.ts";
+import { DomainTodolist } from "@/features/todolists/lib";
 
 export const todolistsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -29,6 +29,24 @@ export const todolistsApi = baseApi.injectEndpoints({
         url: `/todo-lists/${id}`,
         method: "DELETE",
       }),
+      async onQueryStarted(id, { queryFulfilled, dispatch }) {
+        const putchResult = dispatch(
+          todolistsApi.util.updateQueryData(
+            "getTodolists",
+            undefined,
+            (state) => {
+              const index = state.findIndex((todo) => todo.id === id);
+              if (index !== -1) state.splice(index, 1);
+            },
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          putchResult.undo();
+        }
+      },
       invalidatesTags: ["Todolist"],
     }),
     updateTodolistTitle: builder.mutation<
