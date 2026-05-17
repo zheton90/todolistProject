@@ -39,10 +39,10 @@ export const Tasks = ({ todolist }: Props) => {
   }
 
   return filteredTask?.length === 0 ? (
-    <p>There aren't tasks</p>
+    <p style={{ minHeight: "215px" }}>There aren't tasks</p>
   ) : (
     <>
-      <List>
+      <List style={{ minHeight: "185px" }}>
         {filteredTask?.map((task: DomainTask) => {
           return <TaskItem key={task.id} task={task} todolistId={todolistId} />;
         })}
